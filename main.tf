@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-backend-fiapeats" # Substitua pelo nome do bucket
+    bucket         = "terraform-backend-fiapeats-2" # Substitua pelo nome do bucket
     key            = "state/fiapeats-cliente-db/terraform.tfstate"         # Caminho do estado no bucket
     region         = "us-east-1"                       # Região do bucket
     encrypt        = true                              # Criptografia no bucket
@@ -25,12 +25,16 @@ resource "aws_security_group" "default" {
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    lifecycle {
+        create_before_destroy = true  # 🚀 Garante que o SG pode ser recriado sem bloquear outros recursos
+    }
 }
 
 resource "aws_db_instance" "default" {
-    identifier           = "fiapeats-cliente-db"
+    identifier           = "fiapeatsclientedb"
     allocated_storage    = 5
-    db_name              = "fiapeats-cliente-db"
+    db_name              = "fiapeatsclientedb"
     engine               = "postgres"
     engine_version       = "16.3"
     instance_class       = "db.t3.micro"
